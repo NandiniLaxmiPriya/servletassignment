@@ -304,11 +304,15 @@ window.addEventListener('popstate', function () {
              
             </ul>
                 <div class="d-flex flex-row-reverse nav-item text-white">
-                  <button class="d-flex nav-link btn btn-link" type="button" id="signout"><span class="material-symbols-outlined">
+                 <!--  <button class="d-flex nav-link btn btn-link" type="button" id="signout" onclick="/Logout"><button class="d-flex nav-link btn btn-link" type="button" id="signout" onclick="/Logout"><span class="material-symbols-outlined">
                     logout 
                     </span>
-                    <a href="index.jsp">sign out</a>
-                  </button>
+                    <p>sign out</p>
+                  </button> -->
+                  <span class="material-symbols-outlined">
+                    logout 
+                    </span>
+                    <a href="Logout">sign out</a>
                   </div>
           </div>
          

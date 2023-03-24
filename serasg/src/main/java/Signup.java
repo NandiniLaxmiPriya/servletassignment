@@ -12,6 +12,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tomcat.jakartaee.commons.lang3.StringUtils;
 
 /**
  * Servlet implementation class SIgnup
@@ -23,7 +27,7 @@ public class Signup extends HttpServlet {
 		String fname=request.getParameter("username");
 		String lname=request.getParameter("lastname");
 		String dob=request.getParameter("dob");
-		int eid = Integer.parseInt(request.getParameter("eid"));
+		String eid = request.getParameter("eid");
 		String designation=request.getParameter("designation");
 		String mail=request.getParameter("mail");
 		String contactNo=request.getParameter("contactNo");
@@ -32,23 +36,47 @@ public class Signup extends HttpServlet {
 		String url=request.getParameter("url");
 		String file=request.getParameter("file");
 		String password=request.getParameter("password");
-		
+		int eid2 = Integer.parseInt(eid);
 		PrintWriter out = response.getWriter(); 
+		List<Integer> li = new ArrayList<Integer>();
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection myconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/serprac","root","Root@123");
 			PreparedStatement ps = myconn.prepareStatement("insert into userdetails(eid,fname,lname,dob,designation,email,cno,address,language,link,pic,password)values(?,?,?,?,?,?,?,?,?,?,?,?)");
+
 			
-			if(contactNo.length()!=10)
+			PreparedStatement ps3 = myconn.prepareStatement("select eid from userdetails");
+			boolean set = false;
+			ResultSet rs = ps3.executeQuery();
+			while(rs.next()) {
+//				if(rs.getInt(1) == eid2) {
+//				
+//				}
+				li.add(rs.getInt(1));
+			}
+			if(li.contains(eid2)) {
+				System.out.println("hehe");
+				out.println("<script type=\"text/javascript\">"); 
+				out.println("alert('emp id must be unique...');"); 
+				out.println("location='SignUp.jsp';"); 
+				out.println("</script>");
+			}
+			else if(contactNo.length()!=10 && !StringUtils.isNumeric(contactNo))
 			{
 				
 				out.println("<script type=\"text/javascript\">"); 
-				out.println("alert('check contact no 10 digits only...');"); 
+				out.println("alert('check contact no 10 digits only and a number...');"); 
+				out.println("location='SignUp.jsp';"); 
+				out.println("</script>");
+			}else if(!StringUtils.isNumeric(eid)) {
+				out.println("<script type=\"text/javascript\">"); 
+				out.println("alert('emp id must be a number...');"); 
 				out.println("location='SignUp.jsp';"); 
 				out.println("</script>");
 			}else{
-			ps.setInt(1, eid);
+			
+				ps.setInt(1, eid2);
 			ps.setString(2,fname);
 			ps.setString(3, lname);
 			ps.setString(4,dob);
@@ -66,7 +94,7 @@ public class Signup extends HttpServlet {
 			ps2.setString(1, fname);
 			ps2.setString(2,password);
 			ps2.executeUpdate();
-			 RequestDispatcher rs2 = request.getRequestDispatcher("ProfilePage.jsp");
+			 RequestDispatcher rs2 = request.getRequestDispatcher("index.jsp");
 	            rs2.forward(request, response);
 			}
 		}catch(Exception ex)

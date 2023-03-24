@@ -10,6 +10,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -36,6 +37,8 @@ public class ValidFilter extends HttpFilter implements Filter {
 			PreparedStatement ps = myconn.prepareStatement("select * from users");
 //			ps.setInt(2, 4);
 //			ps.setString(1,"orange");
+			PrintWriter out = response.getWriter(); 
+
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 			{
@@ -51,6 +54,9 @@ public class ValidFilter extends HttpFilter implements Filter {
 				chain.doFilter(request, response);
 				
 			}else {
+				out.println("<script type=\"text/javascript\">"); 
+				out.println("alert('user doesnot exists..');"); 
+				out.println("</script>");
 				 RequestDispatcher rs2 = request.getRequestDispatcher("index.jsp");
 		            rs2.include(request, response);
 			}
